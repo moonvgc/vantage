@@ -1,0 +1,76 @@
+{
+  "name": "valorant-account-manager",
+  "version": "0.2.1",
+  "private": true,
+  "author": "naraaalt",
+  "description": "Vantage — a Riot account manager for Valorant (and League): store, locker, stats, quick switching.",
+  "main": "electron/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on tcp:5173 && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .\"",
+    "build": "vite build",
+    "package:win": "npm run build && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win",
+    "start": "electron .",
+    "check": "node scripts/check-electron.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:summary": "node scripts/lint-summary.mjs",
+    "bridge": "node scripts/audit-bridge.mjs .",
+    "verify": "npm run check && npm run bridge && npm run lint && npm test && npm run build",
+    "css:dead": "node scripts/find-dead-css.mjs",
+    "js:dead": "node scripts/find-dead-exports.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitejs/plugin-react": "^6.0.5",
+    "concurrently": "^10.0.4",
+    "cross-env": "^10.1.0",
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3",
+    "eslint": "^10.10.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.12.0",
+    "vite": "^8.2.1",
+    "vitest": "^5.0.1",
+    "wait-on": "^9.1.0"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "build": {
+    "appId": "com.vantage.riotaccountmanager",
+    "productName": "Vantage",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "!electron/**/*.test.js",
+      "package.json",
+      "build/icon.ico"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.ico",
+        "to": "icon.ico"
+      }
+    ],
+    "icon": "build/icon.ico",
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
